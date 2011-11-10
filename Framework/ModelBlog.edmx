@@ -1,0 +1,451 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ModelBlog.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+  <EntityContainer Name="ModelBlogStoreContainer">
+    <EntitySet Name="Users" EntityType="ModelBlog.Store.Users" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Posts" EntityType="ModelBlog.Store.Posts" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Categories" EntityType="ModelBlog.Store.Categories" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Comments" EntityType="ModelBlog.Store.Comments" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Tags" EntityType="ModelBlog.Store.Tags" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="UserExtras" EntityType="ModelBlog.Store.UserExtras" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="PostTags" EntityType="ModelBlog.Store.PostTags" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="UsersPost" Association="ModelBlog.Store.UsersPost">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Post" EntitySet="Posts" />
+    </AssociationSet>
+    <AssociationSet Name="PostCategories" Association="ModelBlog.Store.PostCategories">
+      <End Role="Post" EntitySet="Posts" />
+      <End Role="Categories" EntitySet="Categories" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PostTags_Post" Association="ModelBlog.Store.FK_PostTags_Post">
+      <End Role="Post" EntitySet="Posts" />
+      <End Role="PostTags" EntitySet="PostTags" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PostTags_Tags" Association="ModelBlog.Store.FK_PostTags_Tags">
+      <End Role="Tags" EntitySet="Tags" />
+      <End Role="PostTags" EntitySet="PostTags" />
+    </AssociationSet>
+    <AssociationSet Name="CommentPost" Association="ModelBlog.Store.CommentPost">
+      <End Role="Comment" EntitySet="Comments" />
+      <End Role="Post" EntitySet="Posts" />
+    </AssociationSet>
+    <AssociationSet Name="UsersUserExtra" Association="ModelBlog.Store.UsersUserExtra">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="UserExtra" EntitySet="UserExtras" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Passowrd" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="IsAdmin" Type="bit" Nullable="false" DefaultValue="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UserExtras_UserID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Posts">
+    <Key>
+      <PropertyRef Name="PostID" />
+    </Key>
+    <Property Name="PostID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Title" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PublishedDate" Type="datetime" Nullable="false" />
+    <Property Name="Auther" Type="int" Nullable="false" />
+    <Property Name="Category" Type="int" Nullable="false" />
+    <Property Name="User_UserID" Type="int" Nullable="false" />
+    <Property Name="Categories_CategoryID" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Categories">
+    <Key>
+      <PropertyRef Name="CategoryID" />
+    </Key>
+    <Property Name="CategoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Comments">
+    <Key>
+      <PropertyRef Name="CommentID" />
+    </Key>
+    <Property Name="CommentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PostID" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Posts_PostID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Tags">
+    <Key>
+      <PropertyRef Name="TagID" />
+    </Key>
+    <Property Name="TagID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TagName" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserExtras">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="int" Nullable="false" />
+    <Property Name="LastIP" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="LsatDate" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PostTags">
+    <Key>
+      <PropertyRef Name="Post_PostID" />
+      <PropertyRef Name="Tags_TagID" />
+    </Key>
+    <Property Name="Post_PostID" Type="int" Nullable="false" />
+    <Property Name="Tags_TagID" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="UsersPost">
+    <End Role="Users" Type="ModelBlog.Store.Users" Multiplicity="1" />
+    <End Role="Post" Type="ModelBlog.Store.Posts" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Post">
+        <PropertyRef Name="User_UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="PostCategories">
+    <End Role="Post" Type="ModelBlog.Store.Posts" Multiplicity="*" />
+    <End Role="Categories" Type="ModelBlog.Store.Categories" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Categories">
+        <PropertyRef Name="CategoryID" />
+      </Principal>
+      <Dependent Role="Post">
+        <PropertyRef Name="Categories_CategoryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="CommentPost">
+    <End Role="Comment" Type="ModelBlog.Store.Comments" Multiplicity="*" />
+    <End Role="Post" Type="ModelBlog.Store.Posts" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Post">
+        <PropertyRef Name="PostID" />
+      </Principal>
+      <Dependent Role="Comment">
+        <PropertyRef Name="Posts_PostID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="UsersUserExtra">
+    <End Role="Users" Type="ModelBlog.Store.Users" Multiplicity="*" />
+    <End Role="UserExtra" Type="ModelBlog.Store.UserExtras" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="UserExtra">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="UserExtras_UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PostTags_Post">
+    <End Role="Post" Type="ModelBlog.Store.Posts" Multiplicity="1" />
+    <End Role="PostTags" Type="ModelBlog.Store.PostTags" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Post">
+        <PropertyRef Name="PostID" />
+      </Principal>
+      <Dependent Role="PostTags">
+        <PropertyRef Name="Post_PostID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PostTags_Tags">
+    <End Role="PostTags" Type="ModelBlog.Store.PostTags" Multiplicity="*" />
+    <End Role="Tags" Type="ModelBlog.Store.Tags" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Tags">
+        <PropertyRef Name="TagID" />
+      </Principal>
+      <Dependent Role="PostTags">
+        <PropertyRef Name="Tags_TagID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="ModelBlog" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+        <EntityContainer Name="ModelBlogContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Users" EntityType="ModelBlog.Users" />
+          <EntitySet Name="Posts" EntityType="ModelBlog.Post" />
+          <EntitySet Name="Categories" EntityType="ModelBlog.Categories" />
+          <EntitySet Name="Comments" EntityType="ModelBlog.Comment" />
+          <EntitySet Name="Tags" EntityType="ModelBlog.Tags" />
+          <AssociationSet Name="UsersPost" Association="ModelBlog.UsersPost">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Post" EntitySet="Posts" />
+          </AssociationSet>
+          <AssociationSet Name="PostCategories" Association="ModelBlog.PostCategories">
+            <End Role="Post" EntitySet="Posts" />
+            <End Role="Categories" EntitySet="Categories" />
+          </AssociationSet>
+          <AssociationSet Name="PostTags" Association="ModelBlog.PostTags">
+            <End Role="Post" EntitySet="Posts" />
+            <End Role="Tags" EntitySet="Tags" />
+          </AssociationSet>
+          <AssociationSet Name="CommentPost" Association="ModelBlog.CommentPost">
+            <End Role="Comment" EntitySet="Comments" />
+            <End Role="Post" EntitySet="Posts" />
+          </AssociationSet>
+          <EntitySet Name="UserExtras" EntityType="ModelBlog.UserExtra" />
+          <AssociationSet Name="UsersUserExtra" Association="ModelBlog.UsersUserExtra">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserExtra" EntitySet="UserExtras" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Users">
+          <Documentation>
+            <Summary>用户表</Summary>
+            <LongDescription>用户表</LongDescription>
+          </Documentation>
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Type="Int32" Name="UserID" Nullable="false" annotation:StoreGeneratedPattern="Identity" >
+            <Documentation>
+              <Summary>用户ID</Summary>
+            </Documentation>
+          </Property>
+          <Property Type="String" Name="UserName" Nullable="false" />
+          <Property Type="String" Name="Passowrd" Nullable="false" />
+          <Property Type="Boolean" Name="IsAdmin" Nullable="false" DefaultValue="False" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" />
+          <NavigationProperty Name="Posts" Relationship="ModelBlog.UsersPost" FromRole="Users" ToRole="Post" />
+          <NavigationProperty Name="UserExtras" Relationship="ModelBlog.UsersUserExtra" FromRole="Users" ToRole="UserExtra" />
+        </EntityType>
+        <EntityType Name="Post">
+          <Key>
+            <PropertyRef Name="PostID" />
+          </Key>
+          <Property Type="Int32" Name="PostID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Title" Nullable="false" />
+          <Property Type="String" Name="Content" Nullable="false" />
+          <Property Type="DateTime" Name="PublishedDate" Nullable="false" />
+          <Property Type="Int32" Name="Auther" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="ModelBlog.UsersPost" FromRole="Post" ToRole="Users" />
+          <Property Type="Int32" Name="Category" Nullable="false" />
+          <NavigationProperty Name="Categories" Relationship="ModelBlog.PostCategories" FromRole="Post" ToRole="Categories" />
+          <NavigationProperty Name="Tags" Relationship="ModelBlog.PostTags" FromRole="Post" ToRole="Tags" />
+          <NavigationProperty Name="Comment" Relationship="ModelBlog.CommentPost" FromRole="Post" ToRole="Comment" />
+        </EntityType>
+        <EntityType Name="Categories">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Type="Int32" Name="CategoryID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Name" Nullable="false" />
+          <NavigationProperty Name="Post" Relationship="ModelBlog.PostCategories" FromRole="Categories" ToRole="Post" />
+        </EntityType>
+        <EntityType Name="Comment">
+          <Key>
+            <PropertyRef Name="CommentID" />
+          </Key>
+          <Property Type="Int32" Name="CommentID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Content" Nullable="false" />
+          <Property Type="String" Name="PostID" Nullable="false" />
+          <NavigationProperty Name="Posts" Relationship="ModelBlog.CommentPost" FromRole="Comment" ToRole="Post" />
+        </EntityType>
+        <EntityType Name="Tags">
+          <Key>
+            <PropertyRef Name="TagID" />
+          </Key>
+          <Property Type="Int32" Name="TagID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="TagName" Nullable="false" />
+          <NavigationProperty Name="Post" Relationship="ModelBlog.PostTags" FromRole="Tags" ToRole="Post" />
+        </EntityType>
+        <Association Name="UsersPost">
+          <End Type="ModelBlog.Users" Role="Users" Multiplicity="1" />
+          <End Type="ModelBlog.Post" Role="Post" Multiplicity="*" />
+        </Association>
+        <Association Name="PostCategories">
+          <End Type="ModelBlog.Post" Role="Post" Multiplicity="*" />
+          <End Type="ModelBlog.Categories" Role="Categories" Multiplicity="0..1" />
+        </Association>
+        <Association Name="PostTags">
+          <End Type="ModelBlog.Post" Role="Post" Multiplicity="*" />
+          <End Type="ModelBlog.Tags" Role="Tags" Multiplicity="*" />
+        </Association>
+        <Association Name="CommentPost">
+          <End Type="ModelBlog.Comment" Role="Comment" Multiplicity="*" />
+          <End Type="ModelBlog.Post" Role="Post" Multiplicity="1" />
+        </Association>
+        <EntityType Name="UserExtra">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <NavigationProperty Name="User" Relationship="ModelBlog.UsersUserExtra" FromRole="UserExtra" ToRole="Users" />
+          <Property Type="Int32" Name="UserID" Nullable="false" />
+          <Property Type="String" Name="LastIP" Nullable="false" />
+          <Property Type="DateTime" Name="LsatDate" Nullable="false" />
+        </EntityType>
+        <Association Name="UsersUserExtra">
+          <End Type="ModelBlog.Users" Role="Users" Multiplicity="1" />
+          <End Type="ModelBlog.UserExtra" Role="UserExtra" Multiplicity="1" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ModelBlogStoreContainer" CdmEntityContainer="ModelBlogContainer">
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="IsTypeOf(ModelBlog.Users)">
+        <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="Passowrd" ColumnName="Passowrd" />
+          <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Posts">
+      <EntityTypeMapping TypeName="IsTypeOf(ModelBlog.Post)">
+        <MappingFragment StoreEntitySet="Posts">
+          <ScalarProperty Name="PostID" ColumnName="PostID" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="PublishedDate" ColumnName="PublishedDate" />
+          <ScalarProperty Name="Auther" ColumnName="Auther" />
+          <ScalarProperty Name="Category" ColumnName="Category" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Categories">
+      <EntityTypeMapping TypeName="IsTypeOf(ModelBlog.Categories)">
+        <MappingFragment StoreEntitySet="Categories">
+          <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Comments">
+      <EntityTypeMapping TypeName="IsTypeOf(ModelBlog.Comment)">
+        <MappingFragment StoreEntitySet="Comments">
+          <ScalarProperty Name="CommentID" ColumnName="CommentID" />
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="PostID" ColumnName="PostID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Tags">
+      <EntityTypeMapping TypeName="IsTypeOf(ModelBlog.Tags)">
+        <MappingFragment StoreEntitySet="Tags">
+          <ScalarProperty Name="TagID" ColumnName="TagID" />
+          <ScalarProperty Name="TagName" ColumnName="TagName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserExtras">
+      <EntityTypeMapping TypeName="IsTypeOf(ModelBlog.UserExtra)">
+        <MappingFragment StoreEntitySet="UserExtras">
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="LastIP" ColumnName="LastIP" />
+          <ScalarProperty Name="LsatDate" ColumnName="LsatDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="UsersPost" TypeName="ModelBlog.UsersPost" StoreEntitySet="Posts">
+      <EndProperty Name="Users">
+        <ScalarProperty Name="UserID" ColumnName="User_UserID" />
+      </EndProperty>
+      <EndProperty Name="Post">
+        <ScalarProperty Name="PostID" ColumnName="PostID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="PostCategories" TypeName="ModelBlog.PostCategories" StoreEntitySet="Posts">
+      <EndProperty Name="Categories">
+        <ScalarProperty Name="CategoryID" ColumnName="Categories_CategoryID" />
+      </EndProperty>
+      <EndProperty Name="Post">
+        <ScalarProperty Name="PostID" ColumnName="PostID" />
+      </EndProperty>
+      <Condition ColumnName="Categories_CategoryID" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="PostTags" TypeName="ModelBlog.PostTags" StoreEntitySet="PostTags">
+      <EndProperty Name="Post">
+        <ScalarProperty Name="PostID" ColumnName="Post_PostID" />
+      </EndProperty>
+      <EndProperty Name="Tags">
+        <ScalarProperty Name="TagID" ColumnName="Tags_TagID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="CommentPost" TypeName="ModelBlog.CommentPost" StoreEntitySet="Comments">
+      <EndProperty Name="Post">
+        <ScalarProperty Name="PostID" ColumnName="Posts_PostID" />
+      </EndProperty>
+      <EndProperty Name="Comment">
+        <ScalarProperty Name="CommentID" ColumnName="CommentID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UsersUserExtra" TypeName="ModelBlog.UsersUserExtra" StoreEntitySet="Users">
+      <EndProperty Name="UserExtra">
+        <ScalarProperty Name="UserID" ColumnName="UserExtras_UserID" />
+      </EndProperty>
+      <EndProperty Name="Users">
+        <ScalarProperty Name="UserID" ColumnName="UserID" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram Name="ModelBlog" >
+        <EntityTypeShape EntityType="ModelBlog.Users" Width="1.5" PointX="0.5" PointY="0.75" Height="2.172587890625" />
+        <EntityTypeShape EntityType="ModelBlog.Post" Width="1.5" PointX="3.375" PointY="0.625" Height="2.941793619791667" />
+        <EntityTypeShape EntityType="ModelBlog.Categories" Width="1.5" PointX="6.375" PointY="0.625" Height="1.59568359375" />
+        <EntityTypeShape EntityType="ModelBlog.Comment" Width="1.5" PointX="6.5" PointY="3.5" Height="1.7879850260416665" />
+        <EntityTypeShape EntityType="ModelBlog.Tags" Width="1.5" PointX="3.375" PointY="4.625" Height="1.5956835937499996" />
+        <AssociationConnector Association="ModelBlog.UsersPost">
+          <ConnectorPoint PointX="2" PointY="1.8362939453124998" />
+          <ConnectorPoint PointX="3.375" PointY="1.8362939453124998" />
+        </AssociationConnector>
+        <AssociationConnector Association="ModelBlog.PostCategories">
+          <ConnectorPoint PointX="4.875" PointY="1.422841796875" />
+          <ConnectorPoint PointX="6.375" PointY="1.422841796875" />
+        </AssociationConnector>
+        <AssociationConnector Association="ModelBlog.PostTags">
+          <ConnectorPoint PointX="4.125" PointY="3.566793619791667" />
+          <ConnectorPoint PointX="4.125" PointY="4.625" />
+        </AssociationConnector>
+        <AssociationConnector Association="ModelBlog.CommentPost">
+          <ConnectorPoint PointX="7.96875" PointY="3.5" />
+          <ConnectorPoint PointX="7.96875" PointY="2.891591296875" />
+          <ConnectorPoint PointX="4.875" PointY="2.891591296875" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="ModelBlog.UserExtra" Width="1.5" PointX="0.625" PointY="3.875" Height="1.7879850260416665" />
+        <AssociationConnector Association="ModelBlog.UsersUserExtra">
+          <ConnectorPoint PointX="1.3125" PointY="3.1148893229166661" />
+          <ConnectorPoint PointX="1.3125" PointY="3.875" />
+        </AssociationConnector>
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
