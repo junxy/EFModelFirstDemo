@@ -6,6 +6,7 @@ using System.Data.Entity.Validation; //add
 using System.Linq;
 using Framework.Entities;
 using System.Text;
+using System.Data.Objects;
 
 namespace Framework
 {
@@ -31,6 +32,11 @@ namespace Framework
             }
 
             return base.SaveChanges();
+        }
+
+        public ObjectContext UnderlyingContext
+        {
+            get { return ((IObjectContextAdapter)this).ObjectContext; }
         }
 
     }
